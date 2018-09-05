@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Text To Speech</title>
+</head>
+<body>
+    <input type="text" style="display: none" name="text" value="早安 傻逼chicken">
+    <a href="#" style="font-size: 100px; padding-left: 25%;" class="say">Say it!</a>
+    <audio src="" class="speech" hidden></audio>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+        $(function() {
+            $('a.say').on('click', function(e) {
+                e.preventDefault();
+                var text = $('input[name="text"]').val();
+                // "Hello there" -> "Hello%20there"
+                text = encodeURIComponent(text);
+                var url="https://translate.google.com/translate_tts?ie=UTF-8&q=" + text + "&tl=zh-TW&client=tw-ob";
+                //.play is HTML5 audio method.
+                var play = $('audio').attr('src', url).get(0).play();
+                if (play !== undefined) {
+                    play.then(function() {
+                        console.log("play")
+                    }).catch(function(err) {
+                        console.log("error")
+                    });
+                }
+            })
+        });
+    </script>
+</body>
+</html>

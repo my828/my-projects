@@ -1,0 +1,101 @@
+<canvas id="canvas" style="border: 1px solid black"></canvas>
+<p>hello</p>
+
+<script>
+    var canvas = document.getElementById("canvas");
+    console.log(canvas);
+    canvas.width = 500;
+    canvas.height = 500;
+    var ctx = canvas.getContext("2d");
+    let snake = [];
+    let velocity = {
+        x: 0,
+        y: 1
+    };
+    snake.push({
+        x: 0,
+        y: 0
+    });
+    let apple = {
+        x: 5,
+        y: 5,
+    };
+    let targetLength = 3;
+    let isGameRunning = true;
+    function moveSnake() {
+        let head = snake[0];
+        let newHead = {
+            x: head.x + velocity.x,
+            y: head.y + velocity.y
+        };
+        // here we're going to check if we lost
+        // check if we're outside of the bounds of the game
+        if (newHead.x < 0 || newHead.y < 0 || newHead.x > 9 || newHead.y > 9) {
+            alert("you lost, your score was " + targetLength);
+            isGameRunning = false;
+        }
+        // check if the snake is intersecting with itself
+        for (let i = 0; i < snake.length; i++) {
+            if (snake[i].x === newHead.x && snake[i].y === newHead.y) {
+                alert("you lost, your score was " + targetLength);
+                isGameRunning = false;
+            }
+        }
+        // unshift() adds on or more elements to the beginning of an array and returns the new length of the array
+        // here we are adding new head position of the snake
+        snake.unshift(newHead);
+
+        // here we make sure snake is in the right length
+        if (snake.length > targetLength) {
+            snake.pop();
+        }
+    }
+    function maybeEatApple() {
+        // we can only eat the apple, if we are in the same position as the apple
+        if (apple.x === snake[0].x && apple.y === snake[0].y) {
+            // head of the snake is in the same pos as apple
+            targetLength++;
+            apple.x = Math.floor(Math.random() * 10);
+            apple.y = Math.floor(Math.random() * 10);
+        }
+    }
+    function update() {
+        if (isGameRunning) {
+            moveSnake();
+            maybeEatApple();
+        }
+    }
+    function draw() {
+        ctx.clearRect(0, 0, 500, 500);
+        // here we draw the snake
+        ctx.fillStyle = "green";
+        for (let i = 0; i < snake.length; i++) {
+            ctx.fillRect(snake[i].x * 50, snake[i].y * 50, 50, 50);
+        }
+        // here, we're going to draw the apple
+        ctx.fillStyle = "red";
+        ctx.fillRect(apple.x * 50, apple.y * 50, 50, 50);
+    }
+    function frame() {
+        update();
+        draw();
+    }
+    function onKeyDown(e) {
+        switch (e.keyCode) {
+            case 37: // left
+                velocity = {x: -1, y: 0};
+                break;
+            case 38: // up
+                velocity = {x: 0, y: -1};
+                break;
+            case 39: // right
+                velocity = {x: 1, y: 0};
+                break;
+            case 40: // down
+                velocity = {x: 0, y: 1};
+                break;
+        }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    setInterval(frame, 1000 / 5);
+</script>
