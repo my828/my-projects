@@ -17,19 +17,19 @@ class App extends Component {
     var name = this.state.name;
     var bday = this.state.bday;
     this.setState({
-      info: this.state.info.concat({
-        name: name,
-        bday: bday
+        info: this.state.info.concat({
+          name: name,
+          bday: bday
       })
     })
   }
 
 
   componentDidMount() {
-    //localStorage.clear();
+    localStorage.clear();
     const cached = localStorage.getItem("info");
-    console.log(cached)
-    console.log(JSON.parse(cached))
+    //console.log(cached)
+    //console.log(JSON.parse(cached))
     if (cached) {
       this.setState({
         info: JSON.parse(cached)
@@ -38,7 +38,7 @@ class App extends Component {
   }
   componentDidUpdate() {
     localStorage.setItem("info", JSON.stringify(this.state.info))
-    console.log("nothing" + localStorage.info)
+    //console.log(localStorage.info)
   }
   render() {
     return (
@@ -59,7 +59,13 @@ class App extends Component {
             <option value="name">Name</option>
           </select>
           <ul>
-            <List list={this.state.info}/>
+            {
+              this.state.info.map((info, step) => {
+                return (
+                <List key={step} name={info.name} bday={info.bday}/>
+              )
+              })
+            }
           </ul>
         </div>
       </div>
